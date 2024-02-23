@@ -6,4 +6,4 @@ library(stringi)
 
 
 # Data Import
-?stri_read_lines()
+stri_read_lines(citations.txt, encoding=NULL) # need fix
