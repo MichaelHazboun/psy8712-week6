@@ -1,8 +1,8 @@
 # Script Settings and Resources
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(stringi)
-library(stringr)
 library(tidyverse)
+
 
 
 # Data Import
@@ -12,15 +12,15 @@ length(citations)-length(citations_txt)
 mean(str_length(citations_txt))
 
 # Data Cleaning
-
+View(sample_n(citations_tbl,20)) #when I googled to see which pane is the "source pane" I concluded that it's the same one that i'm writing this script it, so just plopping a view on it should do what you wanted. 
 
 citations_tbl <- tibble(line=1:length(citations_txt),cite=citations_txt) %>%
-  mutate(cite=str_replace_all(citations_tbl$cite,"[\"\']","")) %>%
-  mutate(year=str_extract(citations_tbl$cite,"\\d{4}")) %>%
-  mutate(page_start=str_match(citations_tbl$cite,"(\\d+)-\\d+")[,2]) %>%
-  mutate(pref_ref=str_detect(citations_tbl$cite,regex("performance",ignore_case=T))) %>%
-  mutate(title=str_match(citations_tbl$cite, "\\)[\\.]\\s([^\\.]+[\\.\\?!])")[,2])  %>% #This isn't all inclusive to this painful dataset, but I've wasted too much trying trying to get it right, and it's just not going to work
-  mutate(first_author=str_match(citations_tbl$cite, "^\\*?([A-Z][a-z]+,?\\s[A-Z]\\.\\s?[A-Z]?\\.?)")[,2]) # far from perfect, but the best thing I could come up with (doesn't grab last names with non-letter characters and capital characters [atleast those are some of the flaws I found])
+  mutate(cite=str_replace_all(cite,"[\"\']","")) %>%
+  mutate(year=str_extract(cite,"\\d{4}")) %>%
+  mutate(page_start=str_match(cite,"(\\d+)-\\d+")[,2]) %>%
+  mutate(pref_ref=str_detect(cite,regex("performance",ignore_case=T))) %>%
+  mutate(title=str_match(cite, "\\)[\\.]\\s([^\\.]+[\\.\\?!])")[,2])  %>% #This isn't all inclusive to this painful dataset, but I've wasted too much trying trying to get it right, and it's just not going to work
+  mutate(first_author=str_match(cite, "^\\*?([A-Z][a-z]+,?\\s[A-Z]\\.\\s?[A-Z]?\\.?)")[,2]) # far from perfect, but the best thing I could come up with (doesn't grab last names with non-letter characters and capital characters. Additionally, for the references that are (Lname, X. words) this grabs the first letter of the "words" [atleast those are some of the flaws I found]. However, it does grab the citations that had a * at the start and the ones that didn't have a , after the last name)
 
-
+sum(!is.na((citations_tbl$first_author)))
 
